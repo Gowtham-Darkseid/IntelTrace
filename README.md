@@ -4,6 +4,10 @@
 
 <img width="1695" height="800" alt="image" src="https://github.com/user-attachments/assets/94d7a46f-4257-4f90-861b-6f9335f0c4a5" />
 
+##  Web UI
+
+<img width="1898" height="958" alt="image" src="https://github.com/user-attachments/assets/cc9c6f4f-46dd-4ebb-bf30-b2fa3ee9d2ca" />
+
 
 IntelTrace is a Linux-first OSINT automation toolkit with a **hacker-themed Flask dashboard**. It collects public intelligence for IPs, emails, phone numbers and usernames, correlates results, stores them in MongoDB and generates PDF/JSON reports.
 
