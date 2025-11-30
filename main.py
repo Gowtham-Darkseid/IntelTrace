@@ -11,6 +11,7 @@ from email_intel import EmailIntel
 from phone_intel import PhoneIntel
 from username_intel import UsernameIntel
 from photo_intel import PhotoIntel
+from ddos_intel import DDOSIntel
 from reputation_engine import ReputationEngine
 from timeline_builder import TimelineBuilder
 from report_generator import ReportGenerator
@@ -86,7 +87,8 @@ def run_investigation(target_type, target_value, investigator_name=None):
         'email': EmailIntel(),
         'phone': PhoneIntel(),
         'username': UsernameIntel(),
-        'photo': PhotoIntel()
+        'photo': PhotoIntel(),
+        'ddos': DDOSIntel()
     }[target_type]
 
     print(f"[main] Starting collection for {target_type}: {target_value}")
@@ -123,11 +125,12 @@ def cli():
     print("\033[92m    3. Phone Intelligence\033[0m")
     print("\033[92m    4. Username Intelligence\033[0m")
     print("\033[92m    5. Photo Intelligence\033[0m")
+    print("\033[92m    6. DDOS Analysis (simulated)\033[0m")
     print("\033[92m    0. Exit\033[0m")
     print()
     
     try:
-        choice = input("\033[93m[>] Enter your choice (0-5): \033[0m").strip()
+        choice = input("\033[93m[>] Enter your choice (0-6): \033[0m").strip()
         
         if choice == '0':
             print("\033[92m[+] Exiting IntelTrace. Stay safe!\033[0m")
@@ -138,11 +141,12 @@ def cli():
             '2': 'email',
             '3': 'phone',
             '4': 'username',
-            '5': 'photo'
+            '5': 'photo',
+            '6': 'ddos'
         }
         
         if choice not in type_map:
-            print("\033[91m[!] Invalid choice. Please select 0-5.\033[0m")
+            print("\033[91m[!] Invalid choice. Please select 0-6.\033[0m")
             return
         
         target_type = type_map[choice]
