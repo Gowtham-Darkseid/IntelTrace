@@ -1,14 +1,17 @@
-"""DDOS Intelligence Module - Simulated DDoS Analysis
+"""DDOS Intelligence Module - Simulated DDoS Analysis + Localhost Stress Testing
 
 This module provides comprehensive simulated DDoS analysis data for 
 educational and demonstration purposes. It does NOT perform actual attacks.
 
 Educational Use Only: Demonstrates what a real DDoS detection/analysis 
 system might report.
+
+Includes localhost-only stress testing capabilities for load testing local apps.
 """
 import socket
 import random
 from datetime import datetime, timedelta
+from stress_simulator import LocalhostStressSimulator
 
 
 class DDOSIntel:
@@ -29,6 +32,8 @@ class DDOSIntel:
         This is a safe, read-only simulation for educational purposes.
         NO actual attacks or scanning are performed.
         
+        Special case: If target is 127.0.0.1, offers localhost stress testing.
+        
         Args:
             target: IP address or domain to analyze
             
@@ -39,7 +44,13 @@ class DDOSIntel:
         now = datetime.utcnow()
         results = []
 
-        # Determine target type
+        # Check if this is localhost - offer stress testing
+        simulator = LocalhostStressSimulator()
+        if simulator.validate_target(target):
+            print(f"[ddos_intel] Localhost detected - performing traffic stress simulation")
+            return self._perform_localhost_stress_test(target)
+
+        # Determine target type (non-localhost)
         is_ip, resolved_ip = self._resolve_target(target)
         
         # 1. Target Information
@@ -212,3 +223,147 @@ class DDOSIntel:
                 return False, resolved
             except socket.error:
                 return False, None
+
+    def _perform_localhost_stress_test(self, target):
+        """Perform actual stress tests on localhost for load testing.
+        
+        Args:
+            target: Must be 127.0.0.1 or localhost
+            
+        Returns:
+            list: Results from multiple stress test scenarios
+        """
+        results = []
+        simulator = LocalhostStressSimulator()
+        
+        print("[ddos_intel] ═══════════════════════════════════════════════════")
+        print("[ddos_intel] LOCALHOST STRESS TEST - Educational/Load Testing")
+        print("[ddos_intel] Target: 127.0.0.1 (localhost only)")
+        print("[ddos_intel] ═══════════════════════════════════════════════════")
+        
+        # Test configuration
+        test_port = 5000  # Flask default port
+        test_duration = 5  # Short tests
+        
+        results.append({
+            'type': 'stress_test_info',
+            'target': target,
+            'scope': 'localhost_only',
+            'purpose': 'Load testing and traffic pattern simulation',
+            'test_port': test_port,
+            'disclaimer': 'Tests restricted to 127.0.0.1 for safety'
+        })
+        
+        # Test 1: SYN Flood Simulation
+        print(f"\n[ddos_intel] Test 1/5: SYN Flood Pattern")
+        try:
+            syn_report = simulator.simulate_syn_flood(
+                port=test_port, 
+                duration=test_duration, 
+                rate=50
+            )
+            results.append(syn_report)
+        except Exception as e:
+            results.append({
+                'type': 'stress_test_error',
+                'test': 'SYN Flood',
+                'error': str(e)
+            })
+        
+        # Reset stats
+        simulator.stats = {
+            'packets_sent': 0,
+            'connections_made': 0,
+            'errors': 0,
+            'start_time': None,
+            'end_time': None
+        }
+        
+        # Test 2: UDP Flood Simulation
+        print(f"\n[ddos_intel] Test 2/5: UDP Flood Pattern")
+        try:
+            udp_report = simulator.simulate_udp_flood(
+                port=test_port, 
+                duration=test_duration, 
+                packet_size=512,
+                rate=100
+            )
+            results.append(udp_report)
+        except Exception as e:
+            results.append({
+                'type': 'stress_test_error',
+                'test': 'UDP Flood',
+                'error': str(e)
+            })
+        
+        # Reset stats
+        simulator.stats = {
+            'packets_sent': 0,
+            'connections_made': 0,
+            'errors': 0,
+            'start_time': None,
+            'end_time': None
+        }
+        
+        # Test 3: HTTP Flood Simulation
+        print(f"\n[ddos_intel] Test 3/5: HTTP Flood Pattern")
+        try:
+            http_report = simulator.simulate_http_flood(
+                port=test_port,
+                duration=test_duration,
+                rate=30
+            )
+            results.append(http_report)
+        except Exception as e:
+            results.append({
+                'type': 'stress_test_error',
+                'test': 'HTTP Flood',
+                'error': str(e)
+            })
+        
+        # Reset stats
+        simulator.stats = {
+            'packets_sent': 0,
+            'connections_made': 0,
+            'errors': 0,
+            'start_time': None,
+            'end_time': None
+        }
+        
+        # Test 4: Slowloris Simulation
+        print(f"\n[ddos_intel] Test 4/5: Slowloris Pattern")
+        try:
+            slowloris_report = simulator.simulate_slowloris(
+                port=test_port,
+                duration=test_duration,
+                connections=20
+            )
+            results.append(slowloris_report)
+        except Exception as e:
+            results.append({
+                'type': 'stress_test_error',
+                'test': 'Slowloris',
+                'error': str(e)
+            })
+        
+        # Summary
+        results.append({
+            'type': 'stress_test_summary',
+            'total_tests_run': 4,
+            'target': '127.0.0.1',
+            'total_duration': f'{test_duration * 4} seconds',
+            'recommendations': [
+                'Monitor application performance during load',
+                'Check connection pooling and timeout settings',
+                'Verify rate limiting is working correctly',
+                'Review server resource usage (CPU, memory, connections)',
+                'Test with production-like traffic patterns'
+            ]
+        })
+        
+        print("\n[ddos_intel] ═══════════════════════════════════════════════════")
+        print("[ddos_intel] Stress tests complete!")
+        print(f"[ddos_intel] Total results: {len(results)} data points")
+        print("[ddos_intel] ═══════════════════════════════════════════════════")
+        
+        return results
