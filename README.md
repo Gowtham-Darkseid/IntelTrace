@@ -9,6 +9,8 @@
 <img width="1898" height="958" alt="image" src="https://github.com/user-attachments/assets/cc9c6f4f-46dd-4ebb-bf30-b2fa3ee9d2ca" />
 
 
+##
+
 IntelTrace is a Linux-first OSINT automation toolkit with a **hacker-themed Flask dashboard**. It collects public intelligence for IPs, emails, phone numbers and usernames, correlates results, stores them in MongoDB and generates PDF/JSON reports.
 
 ⚠️ **IMPORTANT**: IntelTrace is intended for **legal OSINT only**. Do not use it to access unauthorized resources or to break any law. See the `LEGAL.md` file.
