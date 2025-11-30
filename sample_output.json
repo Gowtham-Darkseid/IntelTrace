@@ -1,0 +1,15 @@
+{
+  "case_id": "IT-abcdef01",
+  "investigator": "Analyst",
+  "target_type": "username",
+  "target": "exampleuser",
+  "results": [
+    {"platform":"github","exists":true,"url":"https://github.com/exampleuser","status_code":200},
+    {"platform":"twitter","exists":false,"url":"https://twitter.com/exampleuser","status_code":404}
+  ],
+  "reputation": {"score": 35, "factors": ["social_hits_1"]},
+  "timeline": [
+    {"time":"2025-11-30T12:00:00Z","desc":"Collection started"},
+    {"time":"2025-11-30T12:00:05Z","desc":"Analysis complete"}
+  ]
+}

@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="left-panel" id="leftPanel">
+  <div class="panel-toggle" id="panelToggle">◀</div>
+  <div class="panel-resize-handle" id="resizeHandle"></div>
+  <pre class="banner-text">
+╔═════════════════════════════╗
+║                             ║
+║   ██ ███  ██ ███████ ██     ║
+║   ██ ████ ██    ██    ██    ║
+║   ██ ██ ████    ██    ██    ║
+║   ██ ██  ███    ██    ██    ║
+║   ██ ██   ██    ██    ██    ║
+║                             ║
+║   ████ ████   ███    ████   ║
+║     ██ ██  ██ ██  ██ ██     ║
+║     ██ ████   █████  ██     ║
+║     ██ ██  ██ ██  ██ ██     ║
+║     ██ ██   █ ██  ██ ████   ║
+║                             ║
+║        v e r s i o n        ║
+║            2 . 0            ║
+║                             ║
+╚═══════════════════════════════╝
+  </pre>
+  <ul class="menu">
+    <li><a href="/">⚡ Scanner</a></li>
+    <li><a href="/dashboard">◣ Dashboard</a></li>
+    <li><a href="/reports">◈ Reports</a></li>
+    <li class="menu-divider">───────────</li>
+    <li>◉ Settings</li>
+  </ul>
+  <div class="credit-tag">
+    <span class="credit-label">crafted by</span>
+    <span class="credit-name">Gowtham Darkseid</span>
+  </div>
+</div>
+<div class="main">
+  <div id="matrix" class="matrix"></div>
+  <div class="scanner">
+    <h2>&gt; Hacker Console - OSINT Scanner</h2>
+    
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="text">▣ Text Search</button>
+      <button class="tab-btn" data-tab="photo">◈ Photo Search</button>
+    </div>
+
+    <!-- Text Search Tab -->
+    <div id="text-tab" class="tab-content active">
+      <div class="controls">
+        <select id="type">
+          <option value="ip">◉ IP Address</option>
+          <option value="email">◎ Email</option>
+          <option value="phone">◉ Phone</option>
+          <option value="username">◈ Username</option>
+        </select>
+        <input id="value" placeholder="Enter target value..." />
+        <button id="scan">▶ Start Scan</button>
+      </div>
+    </div>
+
+    <!-- Photo Search Tab -->
+    <div id="photo-tab" class="tab-content">
+      <div class="photo-upload">
+        <div class="upload-area" id="dropZone">
+          <div class="upload-icon">◈</div>
+          <p class="upload-text">Drag & drop photo here or click to browse</p>
+          <p class="upload-subtext">Supported: JPG, PNG, GIF, BMP, WEBP (Max 16MB)</p>
+          <input type="file" id="photoInput" accept="image/*" style="display:none">
+          <button class="browse-btn" onclick="document.getElementById('photoInput').click()">Browse Files</button>
+        </div>
+        <div class="photo-preview" id="photoPreview" style="display:none">
+          <img id="previewImage" src="" alt="Preview">
+          <div class="preview-info">
+            <span id="fileName"></span>
+            <button class="remove-btn" id="removePhoto">✕ Remove</button>
+          </div>
+        </div>
+        <div class="photo-url-input">
+          <p style="text-align:center;color:#88ff88;margin:15px 0">— OR —</p>
+          <input type="text" id="photoUrl" placeholder="Enter image URL...">
+        </div>
+        <button id="scanPhoto" class="scan-photo-btn">▶ Analyze Photo</button>
+      </div>
+    </div>
+
+    <div id="log" class="log"></div>
+  </div>
+</div>
+{% endblock %}

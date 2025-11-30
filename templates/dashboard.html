@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="left-panel" id="leftPanel">
+  <div class="panel-toggle" id="panelToggle">◀</div>
+  <div class="panel-resize-handle" id="resizeHandle"></div>
+  <pre class="banner-text">
+╔═════════════════════════════╗
+║                             ║
+║   ██ ███  ██ ███████ ██     ║
+║   ██ ████ ██    ██    ██    ║
+║   ██ ██ ████    ██    ██    ║
+║   ██ ██  ███    ██    ██    ║
+║   ██ ██   ██    ██    ██    ║
+║                             ║
+║   ████ ████   ███    ████   ║
+║     ██ ██  ██ ██  ██ ██     ║
+║     ██ ████   █████  ██     ║
+║     ██ ██  ██ ██  ██ ██     ║
+║     ██ ██   █ ██  ██ ████   ║
+║                             ║
+║        v e r s i o n        ║
+║            2 . 0            ║
+║                             ║
+╚═══════════════════════════════╝
+  </pre>
+  <ul class="menu">
+    <li><a href="/">⚡ Scanner</a></li>
+    <li class="active"><a href="/dashboard">◣ Dashboard</a></li>
+    <li><a href="/reports">◈ Reports</a></li>
+    <li class="menu-divider">───────────</li>
+    <li>◉ Settings</li>
+  </ul>
+  <div class="credit-tag">
+    <span class="credit-label">crafted by</span>
+    <span class="credit-name">Gowtham Darkseid</span>
+  </div>
+</div>
+<div class="main">
+  <div class="dashboard-header">
+    <h1>&gt; Intelligence Dashboard</h1>
+    <div class="header-line">═══════════════════════════════════════════════════════════════════════</div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-value">{{ stats.total_cases }}</div>
+      <div class="stat-label">Total Cases</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🌐</div>
+      <div class="stat-value">{{ stats.target_types.get('ip', 0) }}</div>
+      <div class="stat-label">IP Scans</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📧</div>
+      <div class="stat-value">{{ stats.target_types.get('email', 0) }}</div>
+      <div class="stat-label">Email Scans</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">👤</div>
+      <div class="stat-value">{{ stats.target_types.get('username', 0) }}</div>
+      <div class="stat-label">Username Scans</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📞</div>
+      <div class="stat-value">{{ stats.target_types.get('phone', 0) }}</div>
+      <div class="stat-label">Phone Scans</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📸</div>
+      <div class="stat-value">{{ stats.target_types.get('photo', 0) }}</div>
+      <div class="stat-label">Photo Scans</div>
+    </div>
+  </div>
+
+  <div class="recent-cases">
+    <h2>&gt; Recent Investigations</h2>
+    <div class="cases-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Case ID</th>
+            <th>Target Type</th>
+            <th>Target</th>
+            <th>Reputation Score</th>
+            <th>Investigator</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for case in stats.recent_cases %}
+          <tr>
+            <td><span class="case-id">{{ case.case_id }}</span></td>
+            <td><span class="badge badge-{{ case.target_type }}">{{ case.target_type|upper }}</span></td>
+            <td>{{ case.target }}</td>
+            <td>
+              <span class="score-badge score-{{ 'high' if case.reputation.score > 50 else ('medium' if case.reputation.score > 20 else 'low') }}">
+                {{ case.reputation.score }}
+              </span>
+            </td>
+            <td>{{ case.investigator }}</td>
+            <td>
+              <a href="/reports/{{ case.case_id }}" class="btn-link">View Report →</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <h2>&gt; Quick Actions</h2>
+    <div class="action-buttons">
+      <a href="/" class="action-btn">▶ New Scan</a>
+      <a href="/reports" class="action-btn">📋 All Reports</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

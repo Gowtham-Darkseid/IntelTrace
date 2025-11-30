@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="left-panel" id="leftPanel">
+  <div class="panel-toggle" id="panelToggle">◀</div>
+  <div class="panel-resize-handle" id="resizeHandle"></div>
+  <pre class="banner-text">
+╔═════════════════════════════╗
+║                             ║
+║   ██ ███  ██ ███████ ██     ║
+║   ██ ████ ██    ██    ██    ║
+║   ██ ██ ████    ██    ██    ║
+║   ██ ██  ███    ██    ██    ║
+║   ██ ██   ██    ██    ██    ║
+║                             ║
+║   ████ ████   ███    ████   ║
+║     ██ ██  ██ ██  ██ ██     ║
+║     ██ ████   █████  ██     ║
+║     ██ ██  ██ ██  ██ ██     ║
+║     ██ ██   █ ██  ██ ████   ║
+║                             ║
+║        v e r s i o n        ║
+║            2 . 0            ║
+║                             ║
+╚═══════════════════════════════╝
+  </pre>
+  <ul class="menu">
+    <li><a href="/">⚡ Scanner</a></li>
+    <li><a href="/dashboard">◣ Dashboard</a></li>
+    <li class="active"><a href="/reports">◈ Reports</a></li>
+    <li class="menu-divider">───────────</li>
+    <li>◉ Settings</li>
+  </ul>
+  <div class="credit-tag">
+    <span class="credit-label">crafted by</span>
+    <span class="credit-name">Gowtham Darkseid</span>
+  </div>
+</div>
+<div class="main">
+  <div class="dashboard-header">
+    <h1>&gt; Investigation Reports Archive</h1>
+    <div class="header-line">═══════════════════════════════════════════════════════════════════════</div>
+  </div>
+
+  <div class="filters">
+    <input type="text" id="search" placeholder="🔍 Search by case ID, target, or investigator..." />
+    <select id="filter-type">
+      <option value="">All Types</option>
+      <option value="ip">IP</option>
+      <option value="email">Email</option>
+      <option value="phone">Phone</option>
+      <option value="username">Username</option>
+      <option value="photo">Photo</option>
+    </select>
+  </div>
+
+  <div class="reports-grid">
+    {% for case in cases %}
+    <div class="report-card" data-type="{{ case.target_type }}">
+      <div class="report-header">
+        <span class="case-id">{{ case.case_id }}</span>
+        <span class="badge badge-{{ case.target_type }}">{{ case.target_type|upper }}</span>
+      </div>
+      <div class="report-body">
+        <div class="report-row">
+          <span class="label">Target:</span>
+          <span class="value">{{ case.target }}</span>
+        </div>
+        <div class="report-row">
+          <span class="label">Investigator:</span>
+          <span class="value">{{ case.investigator }}</span>
+        </div>
+        <div class="report-row">
+          <span class="label">Reputation Score:</span>
+          <span class="score-badge score-{{ 'high' if case.reputation.score > 50 else ('medium' if case.reputation.score > 20 else 'low') }}">
+            {{ case.reputation.score }}
+          </span>
+        </div>
+        <div class="report-row">
+          <span class="label">Results Found:</span>
+          <span class="value">{{ case.results|length }}</span>
+        </div>
+        <div class="report-row">
+          <span class="label">Timeline Events:</span>
+          <span class="value">{{ case.timeline|length }}</span>
+        </div>
+      </div>
+      <div class="report-footer">
+        <a href="/reports/{{ case.case_id }}" class="btn-view">View Full Report →</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if not cases %}
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <p>No investigation reports found.</p>
+    <a href="/" class="action-btn">▶ Start Your First Scan</a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+// Simple client-side filtering
+document.getElementById('search').addEventListener('input', filterReports);
+document.getElementById('filter-type').addEventListener('change', filterReports);
+
+function filterReports() {
+  const searchTerm = document.getElementById('search').value.toLowerCase();
+  const filterType = document.getElementById('filter-type').value;
+  const cards = document.querySelectorAll('.report-card');
+  
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    const type = card.dataset.type;
+    const matchesSearch = text.includes(searchTerm);
+    const matchesType = !filterType || type === filterType;
+    
+    card.style.display = matchesSearch && matchesType ? 'block' : 'none';
+  });
+}
+</script>
+{% endblock %}
