@@ -55,6 +55,11 @@ def report_detail(case_id):
     return render_template('report_detail.html', case=case)
 
 
+@app.route('/ddos')
+def ddos_page():
+    return render_template('ddos.html')
+
+
 @app.route('/api/reports')
 def api_reports():
     db = IntelDB()

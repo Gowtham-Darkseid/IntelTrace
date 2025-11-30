@@ -1,0 +1,213 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="left-panel" id="leftPanel">
+  <div class="panel-toggle" id="panelToggle">◀</div>
+  <div class="panel-resize-handle" id="resizeHandle"></div>
+  <pre class="banner-text">
+╔═════════════════════════════╗
+║                             ║
+║   ██ ███  ██ ███████ ██     ║
+║   ██ ████ ██    ██    ██    ║
+║   ██ ██ ████    ██    ██    ║
+║   ██ ██  ███    ██    ██    ║
+║   ██ ██   ██    ██    ██    ║
+║                             ║
+║   ████ ████   ███    ████   ║
+║     ██ ██  ██ ██  ██ ██     ║
+║     ██ ████   █████  ██     ║
+║     ██ ██  ██ ██  ██ ██     ║
+║     ██ ██   █ ██  ██ ████   ║
+║                             ║
+║        v e r s i o n        ║
+║            2 . 0            ║
+║                             ║
+╚═══════════════════════════════╝
+  </pre>
+  <ul class="menu">
+    <li><a href="/">⚡ Scanner</a></li>
+    <li><a href="/dashboard">◣ Dashboard</a></li>
+    <li><a href="/reports">◈ Reports</a></li>
+    <li class="menu-divider">───────────</li>
+    <li class="active"><a href="/ddos">⚠ DDoS Stress Test</a></li>
+    <li class="menu-divider">───────────</li>
+    <li>◉ Settings</li>
+  </ul>
+  <div class="credit-tag">
+    <span class="credit-label">crafted by</span>
+    <span class="credit-name">Gowtham Darkseid</span>
+  </div>
+</div>
+<div class="main">
+  <div id="matrix" class="matrix"></div>
+  <div class="scanner">
+    <h2>&gt; DDoS Stress Testing Lab</h2>
+    
+    <div style="background:rgba(255,0,0,0.1);border:1px solid #ff0000;padding:15px;border-radius:5px;margin-bottom:20px">
+      <div style="color:#ff4444;font-weight:bold;margin-bottom:10px">⚠ LOCALHOST ONLY - Educational/Testing Purpose</div>
+      <div style="color:#ffaa44;font-size:13px">
+        This module performs actual traffic stress tests on <strong>127.0.0.1 ONLY</strong>.<br>
+        Use for load testing local applications and understanding traffic patterns.<br>
+        <strong>Any non-localhost target will be rejected.</strong>
+      </div>
+    </div>
+
+    <!-- Test Configuration -->
+    <div class="controls">
+      <input id="ddos-target" value="127.0.0.1" placeholder="Target (localhost only)" readonly style="opacity:0.7" />
+      <select id="ddos-port">
+        <option value="5000">Port 5000 (Flask)</option>
+        <option value="8080">Port 8080</option>
+        <option value="3000">Port 3000</option>
+        <option value="80">Port 80</option>
+      </select>
+      <select id="ddos-duration">
+        <option value="5">5 seconds</option>
+        <option value="10" selected>10 seconds</option>
+        <option value="15">15 seconds</option>
+        <option value="30">30 seconds</option>
+      </select>
+    </div>
+
+    <!-- Attack Vector Selection -->
+    <div style="margin:20px 0">
+      <h3 style="color:#00FF41;margin-bottom:10px">Select Attack Patterns:</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
+        <label style="background:rgba(0,34,0,0.5);padding:10px;border:1px solid #003300;cursor:pointer;display:flex;align-items:center">
+          <input type="checkbox" id="test-syn" checked style="margin-right:10px">
+          <span>◈ SYN Flood</span>
+        </label>
+        <label style="background:rgba(0,34,0,0.5);padding:10px;border:1px solid #003300;cursor:pointer;display:flex;align-items:center">
+          <input type="checkbox" id="test-udp" checked style="margin-right:10px">
+          <span>◈ UDP Flood</span>
+        </label>
+        <label style="background:rgba(0,34,0,0.5);padding:10px;border:1px solid #003300;cursor:pointer;display:flex;align-items:center">
+          <input type="checkbox" id="test-http" checked style="margin-right:10px">
+          <span>◈ HTTP Flood</span>
+        </label>
+        <label style="background:rgba(0,34,0,0.5);padding:10px;border:1px solid #003300;cursor:pointer;display:flex;align-items:center">
+          <input type="checkbox" id="test-slowloris" checked style="margin-right:10px">
+          <span>◈ Slowloris</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Control Buttons -->
+    <div style="display:flex;gap:10px;margin:20px 0">
+      <button id="start-stress-test" class="controls button" style="flex:1;background:#003300;color:#00ff41;border:1px solid #00ff41;padding:12px;font-weight:bold;cursor:pointer">
+        ▶ Start Stress Test
+      </button>
+      <button id="stop-stress-test" class="controls button" style="flex:1;background:#330000;color:#ff4444;border:1px solid #ff0000;padding:12px;font-weight:bold;cursor:pointer" disabled>
+        ⏹ Stop Test
+      </button>
+    </div>
+
+    <!-- Results Display -->
+    <div id="stress-results" style="margin-top:20px;display:none">
+      <h3 style="color:#00FF41;margin-bottom:10px">Test Results:</h3>
+      <div id="results-container" style="background:rgba(0,17,0,0.8);border:1px solid #003300;padding:15px;border-radius:5px">
+        <!-- Results will be populated here -->
+      </div>
+    </div>
+
+    <!-- Live Log -->
+    <div id="log" class="log" style="min-height:300px"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const startBtn = document.getElementById('start-stress-test');
+  const stopBtn = document.getElementById('stop-stress-test');
+  const log = document.getElementById('log');
+  const resultsDiv = document.getElementById('stress-results');
+  const resultsContainer = document.getElementById('results-container');
+  
+  let isRunning = false;
+
+  function appendLog(msg, color = '#00ff41') {
+    const line = document.createElement('div');
+    line.style.color = color;
+    line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    log.appendChild(line);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  startBtn.addEventListener('click', async function() {
+    if (isRunning) return;
+    
+    const target = document.getElementById('ddos-target').value;
+    const port = document.getElementById('ddos-port').value;
+    const duration = document.getElementById('ddos-duration').value;
+    
+    // Get selected tests
+    const tests = [];
+    if (document.getElementById('test-syn').checked) tests.push('syn');
+    if (document.getElementById('test-udp').checked) tests.push('udp');
+    if (document.getElementById('test-http').checked) tests.push('http');
+    if (document.getElementById('test-slowloris').checked) tests.push('slowloris');
+    
+    if (tests.length === 0) {
+      appendLog('Error: Select at least one attack pattern', '#ff4444');
+      return;
+    }
+    
+    isRunning = true;
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    log.innerHTML = '';
+    resultsDiv.style.display = 'none';
+    
+    appendLog('═══════════════════════════════════════════════════', '#00FF41');
+    appendLog('Starting DDoS Stress Test on 127.0.0.1', '#00FF41');
+    appendLog(`Target: ${target}:${port}`, '#88ff88');
+    appendLog(`Duration: ${duration}s per test`, '#88ff88');
+    appendLog(`Tests: ${tests.join(', ').toUpperCase()}`, '#88ff88');
+    appendLog('═══════════════════════════════════════════════════', '#00FF41');
+    
+    try {
+      const response = await fetch('/scan', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          type: 'ddos',
+          value: target,
+          investigator: 'StressTest'
+        })
+      });
+      
+      if (response.ok) {
+        appendLog('✓ Stress test initiated successfully', '#00ff00');
+        appendLog('Running tests... (this will take a few moments)', '#ffaa00');
+        appendLog(`Estimated completion: ${tests.length * parseInt(duration)} seconds`, '#88ff88');
+        
+        // Poll for results or wait
+        setTimeout(() => {
+          appendLog('Tests complete! Check reports for detailed results.', '#00ff00');
+          appendLog('═══════════════════════════════════════════════════', '#00FF41');
+          isRunning = false;
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+        }, tests.length * parseInt(duration) * 1000 + 2000);
+      } else {
+        appendLog('✗ Test failed to start', '#ff0000');
+        isRunning = false;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      }
+    } catch (error) {
+      appendLog(`✗ Error: ${error.message}`, '#ff0000');
+      isRunning = false;
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+  });
+
+  stopBtn.addEventListener('click', function() {
+    appendLog('Stopping test...', '#ffaa00');
+    isRunning = false;
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+  });
+});
+</script>
+{% endblock %}
