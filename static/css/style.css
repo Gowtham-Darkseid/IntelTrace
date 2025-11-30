@@ -22,7 +22,7 @@ a:hover{color:#88ff88;text-decoration:underline}
 .main.expanded{margin-left:0}
 
 /* Banner */
-.banner-text{font-size:18px;line-height:20px;color:#00FF41;margin-bottom:25px;font-weight:bold;letter-spacing:0.5px}
+.banner-text{font-size:14px;line-height:16px;color:#00FF41;margin-bottom:20px;font-weight:bold;letter-spacing:0.5px}
 
 /* Menu */
 .menu{list-style:none;padding:0;margin-top:30px;margin-bottom:20px;flex:1}
@@ -36,7 +36,7 @@ a:hover{color:#88ff88;text-decoration:underline}
 .menu li a:hover{text-decoration:none}
 
 /* Credit Tag */
-.credit-tag{text-align:center;padding:12px 10px;margin-top:auto;border-top:1px solid #003300;background:rgba(0,34,0,0.5);position:relative;flex-shrink:0}
+.credit-tag{text-align:center;padding:12px 10px;margin-top:auto;margin-bottom:15px;border-top:1px solid #003300;background:rgba(0,34,0,0.5);position:relative;flex-shrink:0}
 .credit-tag::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg, transparent, #00FF41, transparent)}
 .credit-label{display:block;font-size:9px;color:#88ff88;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
 .credit-name{display:block;font-size:12px;color:#00FF41;font-weight:bold;text-shadow:0 0 8px rgba(0,255,65,0.5);letter-spacing:0.5px}
